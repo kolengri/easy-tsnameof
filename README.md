@@ -24,6 +24,16 @@
   </a>
 </p>
 
+## Install
+
+```
+yarn add easy-tsnameof
+```
+
+```
+npm install easy-tsnameof
+```
+
 ## How to use?
 
 ```ts
