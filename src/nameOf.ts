@@ -5,7 +5,7 @@ export type NameOfPath<T> = NameOfPathFunc<T> | keyof T;
 
 export type NameOf<T> = (f: NameOfPath<T>, deep: number) => string;
 
-export const nameOf = <T>(f: NameOfPathFunc<T> | keyof T, deep = 0): string => {
+export const nameOf = <T>(f: NameOfPath<T>, deep = 0): string => {
   if (typeof f === 'string') {
     return f;
   }
@@ -21,9 +21,7 @@ export const nameOf = <T>(f: NameOfPathFunc<T> | keyof T, deep = 0): string => {
   return result;
 };
 
-export const nameOfFabric = <T>() => (
-  f: NameOfPathFunc<T> | keyof T,
-  deep = 0
-) => nameOf<T>(f, deep);
+export const nameOfFabric = <T>() => (f: NameOfPath<T>, deep = 0) =>
+  nameOf<T>(f, deep);
 
 export default nameOf;
