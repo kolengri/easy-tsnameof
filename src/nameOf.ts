@@ -58,10 +58,16 @@ export const nameOf: NameOf = (f: NameOfPath<any>, ...otherArgs: any[]) => {
   return result;
 };
 
-export const nameOfFabric = <
-  T,
-  Replace extends ReplaceObject = ReplaceObject
->() => (f: NameOfPath<T>, deep = 0, replace: Replace) =>
-  nameOf<T>(f, deep, replace);
+export type NameOfFabric = {
+  <PathObject, Replace extends ReplaceObject = ReplaceObject>(): {
+    (f: NameOfPath<PathObject>, deep?: number, replace?: Replace): string;
+    (f: NameOfPath<PathObject>, replace?: Replace): string;
+  };
+};
+
+export const nameOfFabric: NameOfFabric = () => (
+  f: NameOfPath<any>,
+  ...args: any[]
+) => nameOf(f, ...args);
 
 export default nameOf;

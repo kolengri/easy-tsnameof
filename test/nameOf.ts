@@ -1,4 +1,4 @@
-import { nameOf } from '../src/nameOf';
+import { nameOf, nameOfFabric } from '../src/nameOf';
 
 type TestObject1 = {
   test1: {
@@ -62,4 +62,27 @@ describe('TS NameOf', () => {
 
     expect(name).toEqual('test1.test3[999].test4');
   });
+});
+
+it('Test nameOfFabric', async () => {
+  const names = nameOfFabric<TestObject1>();
+
+  expect(names((o) => o.test1.test2.test)).toEqual('test1.test2.test');
+});
+
+it('Test nameOfFabric replace index', async () => {
+  const index = 999;
+  const names = nameOfFabric<TestObject1, { index: number }>();
+
+  expect(names((o) => o.test1.test3[index].test4, { index })).toEqual(
+    'test1.test3[999].test4'
+  );
+});
+it('Test nameOfFabric replace index', async () => {
+  const index = 999;
+  const names = nameOfFabric<TestObject1, { index: number }>();
+
+  expect(names((o) => o.test1.test3[index].test4, 0, { index })).toEqual(
+    'test1.test3[999].test4'
+  );
 });
