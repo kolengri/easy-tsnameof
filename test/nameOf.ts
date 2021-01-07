@@ -31,4 +31,35 @@ describe('TS NameOf', () => {
 
     expect(name).toEqual('test1.test3[999].test4');
   });
+
+  it('Test nameOf replace with cut', async () => {
+    const index = 999;
+    const name = nameOf<TestObject1, { index: number }>(
+      (o) => o.test1.test3[index].test4,
+      1,
+      { index }
+    );
+
+    expect(name).toEqual('test3[999].test4');
+  });
+  it('Test nameOf replace with cut 2', async () => {
+    const index = 999;
+    const name = nameOf<TestObject1, { index: number }>(
+      (o) => o.test1.test3[index].test4,
+      2,
+      { index }
+    );
+
+    expect(name).toEqual('test4');
+  });
+
+  it('Test nameOf replace', async () => {
+    const index = 999;
+    const name = nameOf<TestObject1, { index: number }>(
+      (o) => o.test1.test3[index].test4,
+      { index }
+    );
+
+    expect(name).toEqual('test1.test3[999].test4');
+  });
 });
