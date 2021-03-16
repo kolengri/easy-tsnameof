@@ -17,11 +17,11 @@
   ],
   "scripts": {
     "test": "jest --env=jsdom --collectCoverage",
-    "test:watch": "npm run test -- --watch",
+    "test:watch": "yarn run test -- --watch",
     "start": "cross-env NODE_ENV=development tsc-watch --onSuccess \"rollup -c\"",
     "prebuild": "rimraf dist",
     "build": "tsc && cross-env NODE_ENV=production rollup -c && rimraf compiled",
-    "prepublish": "npm run build",
+    "prepublish": "yarn run build && yarn test",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*' 'test/**/*'",
     "precommit": "lint-staged",
     "addc": "all-contributors add",
