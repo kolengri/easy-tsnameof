@@ -1,5 +1,4 @@
 import { nameOf, NameOfPath, nameOfFabric } from '../src/nameOf';
-import { UnexpectedPathArgument } from '../src/errors';
 
 type TestType = {
   testObject: {
@@ -108,8 +107,8 @@ const BASE_SCENARIOS: Scenario[] = [
 ];
 
 const UNEXPECTED_SCENARIOS: UnexpectedScenario[] = [
-  [{}, new UnexpectedPathArgument(typeof {})],
-  [1000, new UnexpectedPathArgument(typeof 1000)],
+  [{}, new Error('Please pass string or function instead of object')],
+  [1000, new Error('Please pass string or function instead of number')],
 ];
 
 /**

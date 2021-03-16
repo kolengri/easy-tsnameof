@@ -1,5 +1,4 @@
 import { DeepRequired } from 'ts-essentials';
-import { UnexpectedPathArgument } from './errors';
 
 export type NameOfPathFunc<T> = (obj: DeepRequired<T> | never) => unknown;
 export type NameOfPath<T> = NameOfPathFunc<T> | keyof T;
@@ -29,8 +28,8 @@ export type NameOfFabric = {
 };
 
 export const nameOf: NameOf = (f: NameOfPath<any>, ...otherArgs: any[]) => {
-  if ([typeof f !== 'string', typeof f !== 'function'].every(Boolean)) {
-    throw new UnexpectedPathArgument(typeof f);
+  if (typeof f !== 'string' && typeof f !== 'function') {
+    throw new Error(`Please pass string or function instead of ${typeof f}`);
   }
 
   if (typeof f === 'string') {
@@ -53,15 +52,10 @@ export const nameOf: NameOf = (f: NameOfPath<any>, ...otherArgs: any[]) => {
 
   // Replace part of the string with passed object
   if (replace) {
-    const resultWithReplacedParts = Object.entries(replace).reduce(
-      (res, cur) => {
-        const [key, val] = cur;
-        return res.replace(key, String(val));
-      },
+    return Object.entries(replace).reduce(
+      (res, [key, val]) => res.replace(key, String(val)),
       result
     );
-
-    return resultWithReplacedParts;
   }
 
   return result;
