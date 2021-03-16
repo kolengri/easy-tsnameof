@@ -7,23 +7,30 @@ type TestType = {
       testStringInTestObject: string;
       testArrayDeep: { testNumberInArray: number }[];
     };
-    testArrayInObject: { testNumberInArray: number }[];
+    testArrayInObject: {
+      testNumberInArray: number;
+      testArrayInArray: { testNumberInArray: number }[];
+    }[];
   };
 };
+
+type ToReplaceScenarioArg = Record<string, number> | undefined;
+type DeepScenarioArg = number | undefined;
 
 // [value, result, deep, index]
 type Scenario = [
   NameOfPath<TestType>,
   string,
-  number | undefined,
-  Record<string, number> | undefined
+  ToReplaceScenarioArg | DeepScenarioArg,
+  ToReplaceScenarioArg
 ];
 
 type UnexpectedScenario = [any, Error];
 
 const TEST_INDEX = 456;
+const TEST_INDEX2 = 600;
 
-const SCENARIOS: Scenario[] = [
+const BASE_SCENARIOS: Scenario[] = [
   ['testObject', 'testObject', undefined, undefined],
   ['testObject', 'testObject', 1, undefined],
   [
@@ -46,10 +53,27 @@ const SCENARIOS: Scenario[] = [
   ],
   [
     (o) =>
+      o.testObject.testArrayInObject[0].testArrayInArray[0].testNumberInArray,
+    'testObject.testArrayInObject[0].testArrayInArray[0].testNumberInArray',
+    undefined,
+    undefined,
+  ],
+  /**
+   * With index replace cases
+   */
+  [
+    (o) =>
       o.testObject.testObjectDeep.testArrayDeep[TEST_INDEX].testNumberInArray,
     `testObject.testObjectDeep.testArrayDeep[${TEST_INDEX}].testNumberInArray`,
-    undefined,
+    0,
     { TEST_INDEX },
+  ],
+  [
+    (o) =>
+      o.testObject.testObjectDeep.testArrayDeep[TEST_INDEX].testNumberInArray,
+    `testObject.testObjectDeep.testArrayDeep[${TEST_INDEX}].testNumberInArray`,
+    { TEST_INDEX },
+    undefined,
   ],
   [
     (o) =>
@@ -57,6 +81,29 @@ const SCENARIOS: Scenario[] = [
     `testArrayDeep[${TEST_INDEX}].testNumberInArray`,
     2,
     { TEST_INDEX },
+  ],
+
+  [
+    (o) =>
+      o.testObject.testArrayInObject[TEST_INDEX].testArrayInArray[TEST_INDEX2]
+        .testNumberInArray,
+    `testObject.testArrayInObject[${TEST_INDEX}].testArrayInArray[${TEST_INDEX2}].testNumberInArray`,
+    {
+      TEST_INDEX,
+      TEST_INDEX2,
+    },
+    undefined,
+  ],
+  [
+    (o) =>
+      o.testObject.testArrayInObject[TEST_INDEX].testArrayInArray[TEST_INDEX2]
+        .testNumberInArray,
+    `testArrayInObject[${TEST_INDEX}].testArrayInArray[${TEST_INDEX2}].testNumberInArray`,
+    1,
+    {
+      TEST_INDEX,
+      TEST_INDEX2,
+    },
   ],
 ];
 
@@ -70,15 +117,17 @@ const UNEXPECTED_SCENARIOS: UnexpectedScenario[] = [
  */
 
 describe('nameOf', () => {
-  test.each(SCENARIOS)(
+  test.each(BASE_SCENARIOS)(
     'Test name of with %s expected result %s, deep: %s, index: %s',
     (value, result, deep, index) => {
-      expect(nameOf(value, deep, index)).toBe(result);
+      if (typeof deep === 'number') {
+        expect(nameOf(value, deep, index)).toBe(result);
+      } else {
+        expect(nameOf(value, deep)).toBe(result);
+      }
     }
   );
-});
 
-describe('nameOf with unexpected arguments', () => {
   test.each(UNEXPECTED_SCENARIOS)(
     'Test name of with unexpected %s expected result is Error',
     (value, result) => {
@@ -92,16 +141,18 @@ describe('nameOf with unexpected arguments', () => {
  */
 
 describe('nameOfFabric', () => {
-  test.each(SCENARIOS)(
+  test.each(BASE_SCENARIOS)(
     'Test name of with %s expected result %s, deep: %s, index: %s',
     (value, result, deep, index) => {
       const names = nameOfFabric<TestType>();
-      expect(names(value, deep, index)).toBe(result);
+      if (typeof deep === 'number') {
+        expect(names(value, deep, index)).toBe(result);
+      } else {
+        expect(names(value, deep)).toBe(result);
+      }
     }
   );
-});
 
-describe('nameOfFabric with unexpected arguments', () => {
   test.each(UNEXPECTED_SCENARIOS)(
     'Test name of with unexpected %s expected result is Error',
     (value, result) => {
