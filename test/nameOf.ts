@@ -1,4 +1,5 @@
 import { nameOf, NameOfPath, nameOfFabric } from '../src/nameOf';
+import { UnexpectedPathArgument } from '../src/errors';
 
 type TestType = {
   testObject: {
@@ -18,9 +19,13 @@ type Scenario = [
   Record<string, number> | undefined
 ];
 
+type UnexpectedScenario = [any, Error];
+
 const TEST_INDEX = 456;
 
 const SCENARIOS: Scenario[] = [
+  ['testObject', 'testObject', undefined, undefined],
+  ['testObject', 'testObject', 1, undefined],
   [
     (o) => o.testObject.testObjectDeep.testStringInTestObject,
     'testObject.testObjectDeep.testStringInTestObject',
@@ -55,6 +60,15 @@ const SCENARIOS: Scenario[] = [
   ],
 ];
 
+const UNEXPECTED_SCENARIOS: UnexpectedScenario[] = [
+  [{}, new UnexpectedPathArgument(typeof {})],
+  [1000, new UnexpectedPathArgument(typeof 1000)],
+];
+
+/**
+ * nameOf
+ */
+
 describe('nameOf', () => {
   test.each(SCENARIOS)(
     'Test name of with %s expected result %s, deep: %s, index: %s',
@@ -64,13 +78,35 @@ describe('nameOf', () => {
   );
 });
 
+describe('nameOf with unexpected arguments', () => {
+  test.each(UNEXPECTED_SCENARIOS)(
+    'Test name of with unexpected %s expected result is Error',
+    (value, result) => {
+      expect(() => nameOf(value)).toThrow(result);
+    }
+  );
+});
+
+/**
+ * nameOfFabric
+ */
+
 describe('nameOfFabric', () => {
   test.each(SCENARIOS)(
     'Test name of with %s expected result %s, deep: %s, index: %s',
     (value, result, deep, index) => {
       const names = nameOfFabric<TestType>();
-
       expect(names(value, deep, index)).toBe(result);
+    }
+  );
+});
+
+describe('nameOfFabric with unexpected arguments', () => {
+  test.each(UNEXPECTED_SCENARIOS)(
+    'Test name of with unexpected %s expected result is Error',
+    (value, result) => {
+      const names = nameOfFabric<TestType>();
+      expect(() => names(value)).toThrow(result);
     }
   );
 });

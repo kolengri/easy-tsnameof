@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "jest --env=jsdom",
+    "test": "jest --env=jsdom --collectCoverage",
     "test:watch": "npm run test -- --watch",
     "start": "cross-env NODE_ENV=development tsc-watch --onSuccess \"rollup -c\"",
     "prebuild": "rimraf dist",
