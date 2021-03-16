@@ -20,17 +20,25 @@ export type NameOf = {
   ): string;
 };
 
+export type NameOfFabric = {
+  <PathObject, Replace extends ReplaceObject = ReplaceObject>(): {
+    (f: NameOfPath<PathObject>, deep?: number, replace?: Replace): string;
+    (f: NameOfPath<PathObject>, replace?: Replace): string;
+  };
+};
+
 export const nameOf: NameOf = (f: NameOfPath<any>, ...otherArgs: any[]) => {
   if (typeof f === 'string') {
     return f;
   }
 
+  if (typeof f !== 'function') {
+    throw new Error(`Please pass string or function instead of ${typeof f}`);
+  }
+
   const arr = f
     .toString()
-    .replace(';', '')
-    .replace('}', '')
-    .replace(/ /g, '')
-    .replace(/\s/g, '')
+    .replace(/;| |}|\s/g, '')
     .split('.');
 
   let deep = 0;
@@ -56,13 +64,6 @@ export const nameOf: NameOf = (f: NameOfPath<any>, ...otherArgs: any[]) => {
   }
 
   return result;
-};
-
-export type NameOfFabric = {
-  <PathObject, Replace extends ReplaceObject = ReplaceObject>(): {
-    (f: NameOfPath<PathObject>, deep?: number, replace?: Replace): string;
-    (f: NameOfPath<PathObject>, replace?: Replace): string;
-  };
 };
 
 export const nameOfFabric: NameOfFabric = () => (

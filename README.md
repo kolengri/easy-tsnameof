@@ -26,11 +26,11 @@
 
 ## Install
 
-```
+```bash
 yarn add easy-tsnameof
 ```
 
-```
+```bash
 npm install easy-tsnameof
 ```
 
@@ -65,7 +65,7 @@ const resultString = f((o) => o.test1.test2.test3);
 // test1.test2.test3
 ```
 
-# Working with arrays
+## Working with arrays
 
 ```ts
 import { nameOfFabric } from 'easy-tsnameof';
