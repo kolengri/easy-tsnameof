@@ -1,52 +1,65 @@
 import Tool from 'ts-toolbelt';
 import { DeepRequired } from 'ts-essentials';
 
-export type NameOfPath<T> = Tool.Object.Paths<DeepRequired<T>>;
+export type NameOfPath<T = any> = Tool.Object.Paths<DeepRequired<T>> | keyof T;
 
 export type NameOf = {
-  <PathObject>(...args: NameOfPath<PathObject>): string;
+  <PathObject>(args: NameOfPath<PathObject>): string;
 };
 
 export type NameOfFabric = {
   <PathObject>(): {
-    (...args: NameOfPath<PathObject>): string;
+    (args: NameOfPath<PathObject>): string;
   };
 };
 
-export const nameOf: NameOf = (...args): string => {
-  if (args.length === 0) {
-    return '';
-  }
-
-  if (typeof args[0] === 'string' && args.length === 1) {
-    return args[0];
-  }
-
-  const failed = args.findIndex(
-    (arg) => typeof arg === 'object' || Array.isArray(arg)
+const throwErr = (arg: any, argument: number) => {
+  throw new Error(
+    `Please pass string or number instead of ${typeof arg} for argument ${argument}`
   );
+};
 
-  if (failed !== -1) {
-    throw new Error(
-      `Please pass string or number instead of ${typeof args[
-        failed
-      ]} for argument ${failed + 1}`
-    );
+export const nameOf: NameOf = (args): string => {
+  if (typeof args === 'string') {
+    return args;
   }
 
-  const result = args.reduce((acc: string, arg) => {
-    if (typeof arg === 'number') {
-      return `${acc}[${arg}]`;
+  if (typeof args === 'number') {
+    return `[${args}]`;
+  }
+
+  if (Array.isArray(args)) {
+    if (typeof args[0] === 'string' && args.length === 1) {
+      return args[0];
+    }
+    if (typeof args === 'number') {
+      return `[${args}]`;
     }
 
-    if (acc.length === 0) {
-      return arg.toString();
+    const failed = args.findIndex(
+      (arg) => typeof arg !== 'number' && typeof arg !== 'string'
+    );
+
+    if (failed !== -1) {
+      throw throwErr(args[failed], failed + 1);
     }
 
-    return [acc, arg.toString()].join('.');
-  }, '');
+    const result = args.reduce((acc: string, arg) => {
+      if (typeof arg === 'number') {
+        return `${acc}[${arg}]`;
+      }
 
-  return result.toString();
+      if (acc.length === 0) {
+        return arg.toString();
+      }
+
+      return [acc, arg.toString()].join('.');
+    }, '');
+
+    return result.toString();
+  }
+
+  throw throwErr(args, 1);
 };
 
 export const nameOfFabric: NameOfFabric = (): NameOf => nameOf;

@@ -34,6 +34,7 @@ const PATH_SCENARIOS: PathScenario[] = [
     'testObject.testPartial.testString',
   ],
   [['testObject'], 'testObject'],
+  ['testObject', 'testObject'],
 ];
 
 const UNEXPECTED_SCENARIOS: UnexpectedScenario[] = [
@@ -67,13 +68,13 @@ describe('nameOf', () => {
   test.each(UNEXPECTED_SCENARIOS)(
     'Test name of with unexpected %s expected result is Error',
     (args, result) => {
-      expect(() => nameOf<TestType>(...args)).toThrow(result);
+      expect(() => nameOf<TestType>(args)).toThrow(result);
     }
   );
   test.each(PATH_SCENARIOS)(
     'Test name of with array path %s expected result %s',
     (args, result) => {
-      expect(nameOf<TestType>(...args)).toBe(result);
+      expect(nameOf<TestType>(args)).toBe(result);
     }
   );
 });
@@ -87,7 +88,7 @@ describe('nameOfFabric', () => {
     'Test name of with unexpected %s expected result is Error',
     (args, result) => {
       const names = nameOfFabric<TestType>();
-      expect(() => names(...args)).toThrow(result);
+      expect(() => names(args)).toThrow(result);
     }
   );
   test.each(PATH_SCENARIOS)(
@@ -95,7 +96,7 @@ describe('nameOfFabric', () => {
 
     (args, result) => {
       const names = nameOfFabric<TestType>();
-      expect(names(...args)).toBe(result);
+      expect(names(args)).toBe(result);
     }
   );
 });
