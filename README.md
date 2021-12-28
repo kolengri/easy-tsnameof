@@ -44,10 +44,13 @@ type NameOfTest = {
     test2: {
       test3: string;
     };
+    testArr1: { testArrStr: string }[];
   };
 };
-const resultString = nameOf<NameOfTest>((o) => o.test1.test2.test3);
+const resultString = nameOf<NameOfTest>('test1', 'test2', 'test3');
 // test1.test2.test3
+const resultString2 = nameOf<NameOfTest>('test1', 'testArr1', 0, 'testArrStr');
+// test1.testArr1[0].testArrStr
 ```
 
 ```ts
@@ -63,9 +66,17 @@ type NameOfTest = {
 const f = nameOfFabric<NameOfTest>();
 const resultString = f((o) => o.test1.test2.test3);
 // test1.test2.test3
+
+const resultString2 = nameOfFabric<NameOfTest>(
+  'test1',
+  'testArr1',
+  0,
+  'testArrStr'
+);
+// test1.testArr1[0].testArrStr
 ```
 
-## Working with arrays
+## Working with arrays with dynamic vars
 
 ```ts
 import { nameOfFabric } from 'easy-tsnameof';
@@ -80,6 +91,10 @@ type NameOfTest = {
 };
 const f = nameOfFabric<NameOfTest>();
 const index = 999;
-const resultString = f((o) => o.test1.test3[index].test4, { index }); // key must have same name as part to be replaced
+
+const resultString = nameOf<NameOfTest>('test1', 'test3', index, 'test4');
+// test1.test3[999].test4
+
+const resultString2 = f('test1', 'test3', index, 'test4');
 // test1.test3[999].test4
 ```
