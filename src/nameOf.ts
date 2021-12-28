@@ -1,6 +1,7 @@
 import Tool from 'ts-toolbelt';
+import { DeepRequired } from 'ts-essentials';
 
-export type NameOfPath<T> = Tool.Object.Paths<T>;
+export type NameOfPath<T> = Tool.Object.Paths<DeepRequired<T>>;
 
 export type NameOf = {
   <PathObject>(...args: NameOfPath<PathObject>): string;

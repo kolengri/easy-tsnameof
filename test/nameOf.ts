@@ -2,6 +2,9 @@ import { nameOf, NameOfPath, nameOfFabric } from '../src/nameOf';
 
 type TestType = {
   testObject: {
+    testPartial?: {
+      testString: string;
+    };
     testObjectDeep: {
       testStringInTestObject: string;
       testArrayDeep: { testNumberInArray: number }[];
@@ -25,6 +28,10 @@ const PATH_SCENARIOS: PathScenario[] = [
   [
     ['testObject', 'testObjectDeep', 'testStringInTestObject'],
     'testObject.testObjectDeep.testStringInTestObject',
+  ],
+  [
+    ['testObject', 'testPartial', 'testString'],
+    'testObject.testPartial.testString',
   ],
   [['testObject'], 'testObject'],
 ];
