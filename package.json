@@ -11,7 +11,7 @@
   ],
   "main": "dist/index.js",
   "module": "dist/easy-tsnameof.esm.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/types/index.d.ts",
   "files": [
     "dist",
     "src"
