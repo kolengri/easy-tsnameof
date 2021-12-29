@@ -52,7 +52,7 @@ nameOf<NameOfTest>((o) => o.test1.test2.test3);
 nameOf<NameOfTest>('test1');
 // test1
 
-nameOf<NameOfTest>().test1.test2.test3.$path;
+nameOf<NameOfTest, never>().test1.test2.test3.$path;
 // test1.test2.test3
 ```
 
