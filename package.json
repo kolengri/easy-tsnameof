@@ -1,6 +1,6 @@
 {
   "name": "easy-tsnameof",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Typescript nameOf function. Safe types",
   "repository": "https://github.com/kolengri/easy-tsnameof",
   "author": "Grigoriy Kolenko <kolenko@me.com>",
