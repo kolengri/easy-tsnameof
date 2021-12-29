@@ -106,3 +106,5 @@ export const nameOf = <
 
   return proxy as any;
 };
+
+export default nameOf;
