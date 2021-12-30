@@ -1,4 +1,4 @@
-import { Builtin, DeepRequired, Primitive } from 'ts-essentials';
+import { Builtin, DeepRequired, Primitive } from './ts-essentials';
 
 export type PathKey = string | symbol | number;
 
