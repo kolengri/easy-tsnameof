@@ -80,13 +80,13 @@ export declare type DeepNullable<T> = T extends Builtin
   : T extends ReadonlyMap<infer K, infer V>
   ? ReadonlyMap<DeepNullable<K>, DeepNullable<V>>
   : T extends WeakMap<infer K, infer V>
-  ? WeakMap<DeepNullable<K>, DeepNullable<V>>
+  ? WeakMap<K, DeepNullable<V>>
   : T extends Set<infer U>
   ? Set<DeepNullable<U>>
   : T extends ReadonlySet<infer U>
   ? ReadonlySet<DeepNullable<U>>
   : T extends WeakSet<infer U>
-  ? WeakSet<DeepNullable<U>>
+  ? WeakSet<U>
   : T extends Array<infer U>
   ? T extends IsTuple<T>
     ? {
@@ -108,13 +108,13 @@ export declare type DeepUndefinable<T> = T extends Builtin
   : T extends ReadonlyMap<infer K, infer V>
   ? ReadonlyMap<DeepUndefinable<K>, DeepUndefinable<V>>
   : T extends WeakMap<infer K, infer V>
-  ? WeakMap<DeepUndefinable<K>, DeepUndefinable<V>>
+  ? WeakMap<K, DeepUndefinable<V>>
   : T extends Set<infer U>
   ? Set<DeepUndefinable<U>>
   : T extends ReadonlySet<infer U>
   ? ReadonlySet<DeepUndefinable<U>>
   : T extends WeakSet<infer U>
-  ? WeakSet<DeepUndefinable<U>>
+  ? WeakSet<U>
   : T extends Array<infer U>
   ? T extends IsTuple<T>
     ? {
@@ -260,28 +260,6 @@ export declare type PickKeys<T, P> = Exclude<
   undefined
 >;
 
-declare type DeepModify<T> =
-  | {
-      [K in keyof T]?: undefined extends {
-        [K2 in keyof T]: K2;
-      }[K]
-        ? NonUndefinable<T[K]> extends object
-          ? true | DeepModify<NonUndefinable<T[K]>>
-          : true
-        : T[K] extends object
-        ? true | DeepModify<T[K]>
-        : true;
-    }
-  | (T extends Array<infer E> ? Array<DeepModify<E>> : never)
-  | (T extends Promise<infer E> ? Promise<DeepModify<E>> : never)
-  | (T extends Set<infer E> ? Set<DeepModify<E>> : never)
-  | (T extends ReadonlySet<infer E> ? ReadonlySet<DeepModify<E>> : never)
-  | (T extends WeakSet<infer E> ? WeakSet<DeepModify<E>> : never)
-  | (T extends Map<infer K, infer E> ? Map<K, DeepModify<E>> : never)
-  | (T extends ReadonlyMap<infer K, infer E>
-      ? ReadonlyMap<K, DeepModify<E>>
-      : never)
-  | (T extends WeakMap<infer K, infer E> ? WeakMap<K, DeepModify<E>> : never);
 /** Remove keys with `never` value from object type */
 export declare type NonNever<T extends {}> = Pick<
   T,
